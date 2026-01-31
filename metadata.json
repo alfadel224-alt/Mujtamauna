@@ -1,0 +1,9 @@
+{
+  "name": "Mujtama'una - مجتمعنا",
+  "description": "أول منصة تعارف سودانية آمنة تعتمد على الهوية والخصوصية العالية والذكاء الاصطناعي.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}

@@ -24,7 +24,7 @@ const Sidebar: React.FC<SidebarProps> = ({ lang, currentPath, isAdmin }) => {
 
   return (
     <aside className="hidden md:flex flex-col w-72 bg-[#1a3c34] text-white h-screen sticky top-0 shadow-2xl z-20 overflow-hidden">
-      <div className="p-8">
+      <div className="p-8 flex-1">
         <div className="flex items-center space-x-4 space-x-reverse mb-12">
           <div className="w-14 h-14 bg-[#daa520] rounded-[1.5rem] flex items-center justify-center shadow-lg transform rotate-6 border-4 border-[#1a3c34]">
             <span className="text-3xl font-black text-[#1a3c34]">م</span>
@@ -36,38 +36,36 @@ const Sidebar: React.FC<SidebarProps> = ({ lang, currentPath, isAdmin }) => {
         </div>
 
         <nav className="space-y-3">
-          {menuItems.map((item) => (
-            <Link
-              key={item.id}
-              to={item.path}
-              className={`flex items-center px-6 py-4 rounded-[1.5rem] transition-all duration-300 group ${
-                currentPath === item.path 
-                ? 'bg-[#daa520] text-[#1a3c34] font-black shadow-xl scale-105' 
-                : 'text-emerald-100/60 hover:bg-white/5 hover:text-white'
-              }`}
-            >
-              <svg className="w-6 h-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d={item.icon} />
-              </svg>
-              <span className="mx-4 font-bold">{item.label}</span>
-            </Link>
-          ))}
+          {menuItems.map((item) => {
+            const isActive = currentPath === item.path;
+            return (
+              <Link
+                key={item.id}
+                to={item.path}
+                className={`flex items-center px-6 py-4 rounded-[1.5rem] transition-all duration-300 group ${
+                  isActive 
+                  ? 'bg-[#daa520] text-[#1a3c34] shadow-xl' 
+                  : 'text-emerald-100/60 hover:bg-white/5 hover:text-white'
+                }`}
+              >
+                <svg className={`w-6 h-6 ml-4 transition-transform group-hover:scale-110 ${isActive ? 'text-[#1a3c34]' : 'text-emerald-300/40'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d={item.icon} />
+                </svg>
+                <span className="text-sm font-black">{item.label}</span>
+              </Link>
+            );
+          })}
         </nav>
       </div>
 
-      <div className="mt-auto p-8 space-y-4">
-        <div className="p-6 rounded-[2rem] bg-white/5 border border-white/10 backdrop-blur-sm">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-            <span className="text-xs font-bold text-emerald-200">النسخة المستقرة</span>
-          </div>
-          <p className="text-[10px] text-emerald-100/50 leading-relaxed font-black">
-            v1.0.0-PROD
-          </p>
+      {/* Footer Branding - Fixed for Production */}
+      <div className="p-8 border-t border-white/5">
+        <div className="bg-white/5 rounded-2xl p-4 flex items-center gap-3">
+           <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+           <p className="text-[10px] font-black text-emerald-100/60 uppercase tracking-widest leading-none">
+             أهلاً بك في بيتك الثاني
+           </p>
         </div>
-        <p className="text-center text-[8px] font-black text-white/20 uppercase tracking-[0.3em]">
-          صنع بكل حب في السودان 🇸🇩
-        </p>
       </div>
     </aside>
   );

@@ -1,7 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
-import { Member, Language, ConnectionRequest } from '../types';
+import { Member, Language, ConnectionRequest, WallPost } from '../types';
 import { Link } from 'react-router-dom';
+import { geminiService } from '../services/geminiService';
 
 interface DashboardProps {
   members: Member[];
@@ -13,149 +13,136 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ members, requests, currentUser, onUpdateStatus, lang, notify }) => {
-  const [cleanUrl, setCleanUrl] = useState('');
+  const [wallPosts, setWallPosts] = useState<WallPost[]>([]);
+  const [newPostText, setNewPostText] = useState('');
+  const [isPosting, setIsPosting] = useState(false);
+  const [onlineCount, setOnlineCount] = useState(48);
   
   const recommendedMembers = members.filter(m => m.id !== currentUser.id).slice(0, 6);
-  const incomingRequests = requests.filter(req => req.toId === currentUser.id && req.status === 'pending');
 
   useEffect(() => {
-    // Logic to clean the URL from index.html or other sandbox noise
-    let url = window.location.origin;
-    // Ensure we don't have double slashes if origin already includes it
-    if (!url.endsWith('/')) {
-        // We generally want the root for the sharing link
-    }
-    setCleanUrl(url);
+    const timer = setInterval(() => {
+      setOnlineCount(prev => prev + (Math.random() > 0.5 ? 1 : -1));
+    }, 5000);
+
+    const initialPosts: WallPost[] = [
+      { id: 'p1', authorId: '1', authorName: 'أحمد الطيب', authorImage: 'https://i.pravatar.cc/150?u=1', content: 'يا جماعة جمعة مباركة عليكم جميعاً.. أبشروا بالخير 🇸🇩', timestamp: 'منذ ساعة', likes: 24 },
+      { id: 'p2', authorId: '2', authorName: 'سارة محمد', authorImage: 'https://i.pravatar.cc/150?u=2', content: 'سؤال للناس الخبرة: أحسن مكان للقهوة في أم درمان وين؟ ☕', timestamp: 'منذ ساعتين', likes: 15 }
+    ];
+    setWallPosts(initialPosts);
+
+    return () => clearInterval(timer);
   }, []);
 
-  const handleWhatsAppShare = () => {
-    const message = `أبشر بالخير! 🇸🇩 تم إطلاق تطبيق "مجتمعنا"، أول منصة تعارف سودانية آمنة بالذكاء الاصطناعي. تعال انضم لينا وتعرف على ناس شبهك في بيئة محترمة.\n\nالرابط: ${cleanUrl}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-  };
-
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(cleanUrl)
-      .then(() => {
-        if (notify) notify('تم نسخ الرابط النظيف.. أبشر بالخير! 🇸🇩');
-      })
-      .catch(() => {
-        if (notify) notify('عفواً، فشل النسخ. انسخ الرابط يدوياً.', 'error');
-      });
+  const handleCreatePost = async () => {
+    if (!newPostText.trim() || isPosting) return;
+    setIsPosting(true);
+    try {
+      const sanitized = await geminiService.filterProfanity(newPostText);
+      const post: WallPost = {
+        id: Math.random().toString(),
+        authorId: currentUser.id,
+        authorName: currentUser.name,
+        authorImage: currentUser.profileImage,
+        content: sanitized,
+        timestamp: 'الآن',
+        likes: 0
+      };
+      setWallPosts([post, ...wallPosts]);
+      setNewPostText('');
+      if (notify) notify('تم النشر بنجاح ✨');
+    } catch (err) {
+      if (notify) notify('حدث خطأ ما', 'error');
+    } finally {
+      setIsPosting(false);
+    }
   };
 
   return (
-    <div className="w-full space-y-10 animate-in fade-in duration-700">
+    <div className="w-full space-y-8 animate-in fade-in duration-500 px-4 pt-6 pb-24 max-w-full overflow-hidden">
       
-      {/* Hero Banner */}
-      <section className="relative overflow-hidden rounded-[2.5rem] bg-[#1a3c34] p-8 md:p-16 shadow-xl flex flex-col gap-8 group">
-        <div className="absolute top-0 right-0 w-full h-full opacity-10 pointer-events-none transition-transform duration-1000 group-hover:scale-110">
-          <div className="absolute -top-12 -right-12 w-64 h-64 bg-[#daa520] rounded-full blur-[80px]"></div>
+      {/* Banner - Responsive and Contained */}
+      <section className="relative overflow-hidden rounded-[2.5rem] bg-[#1a3c34] p-8 shadow-xl flex flex-col gap-4 min-h-[160px]">
+        {/* Decorative Circle constrained to parent */}
+        <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-[#daa520]/20 rounded-full blur-3xl pointer-events-none"></div>
+        
+        <div className="relative z-10 space-y-1">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full border border-white/10 mb-2">
+             <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
+             <span className="text-[9px] font-black text-emerald-100 uppercase tracking-widest">{onlineCount} متصل الآن</span>
+          </div>
+          <h2 className="text-3xl font-black text-white leading-tight">
+            مرحب بيك <br/> <span className="text-[#daa520]">في دارك</span>
+          </h2>
+        </div>
+      </section>
+
+      {/* Post Input Card */}
+      <div className="bg-white p-5 rounded-[2rem] shadow-sm border border-emerald-50 space-y-4">
+        <textarea 
+          value={newPostText}
+          onChange={(e) => setNewPostText(e.target.value)}
+          placeholder="كيف الحال يا أهلنا؟"
+          className="w-full bg-slate-50 rounded-2xl p-4 outline-none font-bold text-sm h-24 resize-none border border-transparent focus:border-emerald-100 transition-all"
+        />
+        <div className="flex justify-end">
+          <button 
+            onClick={handleCreatePost}
+            disabled={!newPostText.trim() || isPosting}
+            className={`px-8 py-3 rounded-xl font-black text-xs shadow-lg transition-all active:scale-95 ${!newPostText.trim() || isPosting ? 'bg-slate-100 text-slate-300' : 'bg-[#1a3c34] text-[#daa520]'}`}
+          >
+            {isPosting ? 'جاري النشر...' : 'انشر الآن ✨'}
+          </button>
+        </div>
+      </div>
+
+      {/* Wall Section */}
+      <div className="space-y-5">
+        <div className="flex items-center justify-between px-2">
+           <h3 className="text-xl font-black text-[#1a3c34]">الديوان العام</h3>
+           <Link to="/discover" className="text-[10px] font-black text-[#daa520] underline">اكتشف المزيد</Link>
         </div>
         
-        <div className="relative z-10 space-y-6 text-right">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 backdrop-blur rounded-full border border-white/20 text-[#daa520] text-[9px] font-black uppercase tracking-widest">
-            جاهز للنشر والاستخدام 🚀
-          </div>
-          <h2 className="text-4xl md:text-6xl font-black text-white leading-tight">
-            مجتمعنا <br/> <span className="text-[#daa520]">لَمّتنا السودانية</span>
-          </h2>
-          <div className="flex flex-wrap gap-3 pt-2 justify-end">
-            <Link to="/discover" className="px-6 py-4 bg-[#daa520] text-[#1a3c34] rounded-2xl font-black text-sm shadow-lg active:scale-95 transition-transform">اكتشف الأعضاء</Link>
-            <button 
-              onClick={handleWhatsAppShare} 
-              className="px-6 py-4 bg-[#25D366] text-white rounded-2xl font-black text-sm flex items-center gap-2 shadow-lg active:scale-95"
-            >
-              <span>💬</span> انشر في واتساب
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Vercel Deployment & Sharing Hub */}
-      <section className="bg-white p-8 rounded-[2.5rem] border-2 border-emerald-50 shadow-sm space-y-8">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-             <div className="w-12 h-12 bg-[#000] text-white rounded-2xl flex items-center justify-center text-xl font-bold">▲</div>
-             <div>
-                <h3 className="text-xl font-black text-[#1a3c34]">دليل الرفع على Vercel</h3>
-                <p className="text-[10px] font-bold text-slate-400">للحصول على رابط فعال ومستقر</p>
-             </div>
-          </div>
-          <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black">
-            <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-            جاهز للنشر
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-4">
-            <h4 className="font-black text-[#1a3c34] text-sm flex items-center gap-2">
-              <span className="w-6 h-6 bg-slate-100 rounded-lg flex items-center justify-center text-[10px]">1</span>
-              رابط النشر الحالي:
-            </h4>
-            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 flex items-center justify-between gap-3 group">
-              <code className="text-[10px] text-emerald-700 font-bold truncate flex-1">{cleanUrl}</code>
-              <button 
-                onClick={copyToClipboard}
-                className="p-2 bg-white text-[#1a3c34] rounded-xl border border-slate-200 hover:border-[#daa520] transition-all shadow-sm active:scale-90"
-                title="نسخ الرابط"
-              >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
-              </button>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <h4 className="font-black text-[#1a3c34] text-sm flex items-center gap-2">
-              <span className="w-6 h-6 bg-slate-100 rounded-lg flex items-center justify-center text-[10px]">2</span>
-              خطوات Vercel الصحيحة:
-            </h4>
-            <div className="text-[11px] font-bold text-slate-500 space-y-2 leading-relaxed">
-              <p>• تأكد من رفع كل الملفات (index.html, index.tsx, App.tsx, إلخ).</p>
-              <p>• في إعدادات Vercel، أضف <strong>Environment Variable</strong> باسم <code className="text-[#daa520]">API_KEY</code> وضعه قيمته.</p>
-              <p>• الرابط الذي يوفره لك Vercel هو الذي يجب مشاركته.</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="pt-4 border-t border-slate-50">
-           <a 
-             href="https://vercel.com/new" 
-             target="_blank" 
-             rel="noopener noreferrer"
-             className="w-full flex items-center justify-center gap-3 py-4 bg-black text-white rounded-2xl font-black text-sm shadow-xl hover:bg-slate-800 transition-all active:scale-95"
-           >
-             <span>🚀</span> ارفع مشروعك على Vercel الآن
-           </a>
-        </div>
-      </section>
-
-      {/* Suggested Members */}
-      <section className="space-y-6">
-        <div className="flex items-center justify-between px-2">
-          <h2 className="text-xl font-black text-[#1a3c34]">أعضاء مميزون</h2>
-          <Link to="/discover" className="text-[10px] font-black text-[#daa520] uppercase tracking-widest underline underline-offset-4">عرض الكل</Link>
-        </div>
-
-        <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4 px-2">
-          {recommendedMembers.map(member => (
-            <div key={member.id} className="min-w-[180px] bg-white rounded-[2rem] p-5 shadow-sm border border-slate-50 flex flex-col items-center text-center gap-4 hover:border-[#daa520]/30 transition-colors">
-              <div className="relative">
-                <div className="w-24 h-24 rounded-full p-1 border-2 border-[#daa520]">
-                  <img src={member.profileImage} className="w-full h-full rounded-full object-cover blur-[2px] opacity-50 grayscale" alt="" />
+        <div className="space-y-4">
+          {wallPosts.map(post => (
+            <div key={post.id} className="bg-white p-6 rounded-[2rem] shadow-sm border border-emerald-50 space-y-4 hover:border-emerald-100 transition-all">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl overflow-hidden border-2 border-slate-50">
+                  <img src={post.authorImage} className="w-full h-full object-cover grayscale" alt="" />
+                </div>
+                <div>
+                  <h4 className="font-black text-xs text-[#1a3c34]">{post.authorName}</h4>
+                  <p className="text-[9px] font-bold text-slate-400">{post.timestamp}</p>
                 </div>
               </div>
-              <div className="space-y-0.5">
-                <h3 className="text-sm font-black text-[#1a3c34]">{member.name}</h3>
-                <p className="text-[9px] font-bold text-slate-400">{member.city}</p>
-              </div>
-              <Link to="/discover" className="w-full py-2 bg-[#fdfcf0] text-[#1a3c34] rounded-xl font-black text-[10px] border border-emerald-50">عرض البروفايل</Link>
+              <p className="text-sm font-medium leading-relaxed text-slate-700 bg-slate-50/50 p-4 rounded-xl border border-slate-100/30">
+                {post.content}
+              </p>
             </div>
           ))}
         </div>
-      </section>
+      </div>
 
-      <div className="pb-12"></div>
+      {/* Suggested Members - Compact Scroll */}
+      <div className="space-y-5">
+        <h3 className="text-xl font-black text-[#1a3c34] px-2">أعضاء بانتظارك</h3>
+        <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4 px-2">
+          {recommendedMembers.map(member => (
+            <Link key={member.id} to="/discover" className="min-w-[140px] bg-white rounded-[2rem] p-5 shadow-sm border border-emerald-50 flex flex-col items-center text-center gap-3 hover:shadow-md transition-all">
+              <div className="w-16 h-16 rounded-full p-1 border-2 border-emerald-100 overflow-hidden">
+                <img src={member.profileImage} className="w-full h-full rounded-full object-cover grayscale opacity-70" alt="" />
+              </div>
+              <div className="space-y-0.5">
+                <h4 className="text-[11px] font-black text-[#1a3c34] truncate w-24">{member.name}</h4>
+                <p className="text-[9px] font-bold text-slate-400">{member.city}</p>
+              </div>
+              <div className="w-full py-2 bg-slate-50 text-[#1a3c34] rounded-lg font-black text-[9px]">عرض البروفايل</div>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <div className="pb-8"></div>
     </div>
   );
 };

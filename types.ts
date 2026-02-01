@@ -11,6 +11,16 @@ export interface ConnectionRequest {
   timestamp: string;
 }
 
+export interface WallPost {
+  id: string;
+  authorId: string;
+  authorName: string;
+  authorImage: string;
+  content: string;
+  timestamp: string;
+  likes: number;
+}
+
 export interface Member {
   id: string;
   name: string;

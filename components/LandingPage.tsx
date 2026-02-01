@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Language } from '../types';
 
@@ -9,109 +8,80 @@ interface Props {
 
 const LandingPage: React.FC<Props> = ({ onStart, lang }) => {
   return (
-    <div className="min-h-screen bg-[#fdfcf0] overflow-x-hidden w-full selection:bg-[#daa520] selection:text-[#1a3c34]">
-      {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center justify-center p-4 md:p-12 overflow-hidden w-full">
-        {/* Background Image Overlay */}
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1547149666-769b42002e20?q=80&w=1200&auto=format&fit=crop" 
-            className="w-full h-full object-cover opacity-10 grayscale"
-            alt=""
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#fdfcf0]/10 via-[#fdfcf0]/90 to-[#fdfcf0]"></div>
+    <div className="min-h-[100dvh] bg-[#fdfcf0] w-full relative font-['Tajawal'] flex flex-col overflow-hidden">
+      {/* Hero Section - Fixed with controlled overflow */}
+      <section className="relative flex-1 flex flex-col items-center justify-center p-6 overflow-hidden">
+        
+        {/* Background Layer - Contained */}
+        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+          {/* Decorative Circle 1 */}
+          <div className="absolute top-[-5%] right-[-10%] w-[50%] md:w-[30%] aspect-square bg-[#daa520] opacity-[0.15] rounded-full blur-[60px] md:blur-[100px]"></div>
+          
+          {/* Decorative Circle 2 */}
+          <div className="absolute bottom-[10%] left-[-15%] w-[60%] md:w-[40%] aspect-square bg-[#1a3c34] opacity-[0.08] rounded-full blur-[60px] md:blur-[120px]"></div>
+          
+          {/* Subtle Grid Pattern */}
+          <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#1a3c34 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
         </div>
 
-        <div className="relative z-10 text-center max-w-4xl space-y-8 md:space-y-12 animate-in fade-in zoom-in duration-1000 px-4">
-          <div className="w-20 h-20 md:w-24 md:h-24 bg-[#1a3c34] rounded-[2rem] mx-auto flex items-center justify-center text-4xl md:text-5xl shadow-2xl transform -rotate-12 border-4 border-white shrink-0">م</div>
-          <h1 className="text-5xl md:text-8xl font-black text-[#1a3c34] tracking-tight leading-none">
-            مجتمعنا <span className="text-[#daa520]">.</span>
-          </h1>
-          <p className="text-lg md:text-2xl text-[#1a3c34]/80 font-bold max-w-2xl mx-auto leading-relaxed">
-            المنصة السودانية الأولى للتعارف الجاد، التي تجمع بين <span className="text-[#daa520]">القيم السودانية الأصيلة</span> وأحدث تقنيات الخصوصية.
-          </p>
+        {/* Content Layer */}
+        <div className="relative z-10 text-center space-y-8 animate-in fade-in zoom-in duration-700 max-w-lg mx-auto">
+          {/* Animated Icon */}
+          <div className="w-24 h-24 bg-[#1a3c34] rounded-[2.5rem] mx-auto flex items-center justify-center text-5xl shadow-[0_20px_50px_rgba(26,60,52,0.3)] transform -rotate-12 border-4 border-white transition-transform hover:rotate-0 duration-500">
+            <span className="text-white drop-shadow-lg">م</span>
+          </div>
           
-          <div className="flex flex-col items-center justify-center gap-6 pt-6">
+          <div className="space-y-4 px-4">
+            <h1 className="text-6xl md:text-8xl font-black text-[#1a3c34] tracking-tight">
+              مجتمعنا<span className="text-[#daa520]">.</span>
+            </h1>
+            <p className="text-lg md:text-2xl text-[#1a3c34]/80 font-bold leading-relaxed">
+              ونسة سمحة، قلوب متآلفة، <br/> وبيئة سودانية أصيلة وآمنة تماماً.
+            </p>
+          </div>
+          
+          <div className="flex flex-col items-center gap-6 pt-4 px-4">
             <button 
               onClick={onStart}
-              className="px-10 py-5 bg-[#1a3c34] text-white rounded-full text-xl md:text-2xl font-black shadow-2xl hover:bg-[#122a24] hover:scale-105 active:scale-95 transition-all w-full md:w-auto"
+              className="px-12 py-5 bg-[#1a3c34] text-white rounded-full text-xl font-black shadow-[0_15px_40px_rgba(26,60,52,0.4)] hover:scale-105 active:scale-95 transition-all w-full max-w-xs"
             >
               ابدأ رحلتك الآن 🇸🇩
             </button>
-            <div className="flex items-center gap-3 text-[#1a3c34]/60 font-black text-[10px] md:text-xs uppercase tracking-widest">
-              <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-              +1,500 زول وزولة انضموا إلينا
+            
+            <div className="flex items-center gap-2.5">
+              <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>
+              <p className="text-[10px] text-[#1a3c34]/50 font-black uppercase tracking-[0.2em]">
+                أكثر من 1,500 زول وزولة بانتظارك
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Values Section */}
-      <section className="py-16 md:py-24 px-4 max-w-7xl mx-auto w-full overflow-hidden">
-        <div className="text-center mb-16 space-y-4">
-          <h2 className="text-3xl md:text-4xl font-black text-[#1a3c34]">قيمنا السودانية الراسخة</h2>
-          <div className="w-16 h-1.5 bg-[#daa520] mx-auto rounded-full"></div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
+      {/* Values Cards - Mobile Optimized */}
+      <section className="bg-white/80 backdrop-blur-md rounded-t-[3rem] px-6 py-12 space-y-6 shadow-[0_-20px_50px_rgba(0,0,0,0.03)] border-t border-white relative z-20">
+        <div className="grid grid-cols-1 gap-4 max-w-md mx-auto">
           {[
-            { 
-              title: 'الخصوصية الكاملة', 
-              desc: 'نظام حماية للصور لا يظهر هويتك إلا لمن تختار وبعد قبولك الصريح.', 
-              icon: '🛡️',
-              color: 'bg-emerald-50'
-            },
-            { 
-              title: 'التحقق الصارم', 
-              desc: 'نحن لا نسمح بالحسابات الوهمية. كل عضو يمر بعملية تحقق إجبارية بالصورة.', 
-              icon: '✅',
-              color: 'bg-amber-50'
-            },
-            { 
-              title: 'الهوية السودانية', 
-              desc: 'صمم التطبيق ليعكس ذوقنا وثقافتنا ولهجتنا السودانية السمحة في كل ركن.', 
-              icon: '🇸🇩',
-              color: 'bg-indigo-50'
-            }
-          ].map((val, i) => (
-            <div key={i} className={`${val.color} p-8 md:p-12 rounded-[2.5rem] md:rounded-[3.5rem] border-2 border-transparent hover:border-white hover:shadow-xl transition-all group w-full`}>
-              <span className="text-4xl md:text-5xl mb-6 block transform group-hover:scale-110 transition-transform">{val.icon}</span>
-              <h3 className="text-xl md:text-2xl font-black text-[#1a3c34] mb-3">{val.title}</h3>
-              <p className="text-sm md:text-base text-slate-600 font-bold leading-relaxed">{val.desc}</p>
+            { title: 'خصوصية تامة', desc: 'صورك محمية ولا تظهر إلا بموافقتك الصريحة.', icon: '🛡️', color: 'bg-emerald-50 text-emerald-600' },
+            { title: 'أمان عالي', desc: 'لا مكان للحسابات الوهمية، كل عضو موثق.', icon: '✅', color: 'bg-amber-50 text-amber-600' },
+            { title: 'روح سودانية', desc: 'تطبيق مصمم خصيصاً ليعكس ذوقنا وقيمنا.', icon: '🇸🇩', color: 'bg-indigo-50 text-indigo-600' }
+          ].map((v, i) => (
+            <div key={i} className="flex items-center gap-5 p-5 bg-[#fdfcf7] rounded-3xl border border-emerald-50 hover:shadow-lg transition-all">
+              <div className={`w-14 h-14 shrink-0 rounded-2xl flex items-center justify-center text-3xl shadow-sm ${v.color}`}>
+                {v.icon}
+              </div>
+              <div className="flex-1">
+                <h3 className="font-black text-[#1a3c34] text-sm mb-0.5">{v.title}</h3>
+                <p className="text-[11px] text-slate-500 font-bold leading-snug">{v.desc}</p>
+              </div>
             </div>
           ))}
         </div>
-      </section>
-
-      {/* Refined Scenery Section - Fixed Layout Bleed */}
-      <section className="py-12 md:py-20 w-full px-4 max-w-7xl mx-auto overflow-hidden">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          <div className="aspect-[3/4] rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-xl transform hover:scale-[1.02] transition-transform">
-             <img src="https://images.unsplash.com/photo-1547149666-769b42002e20?w=600&auto=format" className="w-full h-full object-cover" alt="" />
-          </div>
-          <div className="aspect-[3/4] rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-xl md:mt-12 transform hover:scale-[1.02] transition-transform">
-             <img src="https://images.unsplash.com/photo-1596701062351-be3499416071?w=600&auto=format" className="w-full h-full object-cover" alt="" />
-          </div>
-          <div className="aspect-[3/4] rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-xl transform hover:scale-[1.02] transition-transform">
-             <img src="https://images.unsplash.com/photo-1563206767-5b18f218e0de?w=600&auto=format" className="w-full h-full object-cover" alt="" />
-          </div>
-          <div className="aspect-[3/4] rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-xl md:mt-8 transform hover:scale-[1.02] transition-transform">
-             <img src="https://images.unsplash.com/photo-1593642634367-d91a135587b5?w=600&auto=format" className="w-full h-full object-cover" alt="" />
-          </div>
+        
+        <div className="pt-6 text-center">
+           <p className="text-[10px] text-slate-300 font-black uppercase tracking-widest">© 2024 مجتمعنا - كل الحقوق محفوظة</p>
         </div>
       </section>
-
-      {/* Final CTA */}
-      <footer className="py-20 md:py-32 text-center bg-[#1a3c34] text-white rounded-t-[4rem] md:rounded-t-[6rem] px-4 w-full">
-        <h2 className="text-3xl md:text-5xl font-black mb-8 leading-tight">هل أنت مستعد للانضمام <br className="md:hidden"/> لمجتمعنا؟</h2>
-        <button 
-          onClick={onStart}
-          className="bg-[#daa520] text-[#1a3c34] px-10 py-5 md:px-16 md:py-6 rounded-full text-xl md:text-2xl font-black shadow-2xl hover:scale-105 active:scale-95 transition-all"
-        >
-          سجل هسة - مجاناً
-        </button>
-        <p className="mt-10 text-emerald-100/50 text-[10px] md:text-xs font-black uppercase tracking-widest">يجب أن يكون عمرك 18 عاماً فأكثر • سياسة خصوصية صارمة</p>
-      </footer>
     </div>
   );
 };

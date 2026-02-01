@@ -30,7 +30,7 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            overflow-x: hidden; /* منع التمرير الأفقي نهائياً */
+            overflow-x: hidden !important; /* منع أي تمرير أفقي نهائياً */
             position: relative;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -49,13 +49,6 @@
         
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        /* تجميل الحركات */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .fade-up { animation: fadeIn 0.5s ease-out forwards; }
     </style>
 <script type="importmap">
 {

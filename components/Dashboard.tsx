@@ -62,9 +62,8 @@ const Dashboard: React.FC<DashboardProps> = ({ members, requests, currentUser, o
     <div className="w-full space-y-8 animate-in fade-in duration-500 px-4 pt-6 pb-24 max-w-full overflow-hidden">
       
       {/* Banner - Responsive and Contained */}
-      <section className="relative overflow-hidden rounded-[2.5rem] bg-[#1a3c34] p-8 shadow-xl flex flex-col gap-4 min-h-[160px]">
-        {/* Decorative Circle constrained to parent */}
-        <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-[#daa520]/20 rounded-full blur-3xl pointer-events-none"></div>
+      <section className="relative overflow-hidden rounded-[2.5rem] bg-[#1a3c34] p-8 shadow-xl flex flex-col gap-4">
+        <div className="absolute top-[-20%] right-[-10%] w-40 h-40 bg-[#daa520]/15 rounded-full blur-3xl pointer-events-none"></div>
         
         <div className="relative z-10 space-y-1">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full border border-white/10 mb-2">
@@ -77,7 +76,7 @@ const Dashboard: React.FC<DashboardProps> = ({ members, requests, currentUser, o
         </div>
       </section>
 
-      {/* Post Input Card */}
+      {/* Post Input */}
       <div className="bg-white p-5 rounded-[2rem] shadow-sm border border-emerald-50 space-y-4">
         <textarea 
           value={newPostText}
@@ -96,48 +95,38 @@ const Dashboard: React.FC<DashboardProps> = ({ members, requests, currentUser, o
         </div>
       </div>
 
-      {/* Wall Section */}
-      <div className="space-y-5">
-        <div className="flex items-center justify-between px-2">
-           <h3 className="text-xl font-black text-[#1a3c34]">الديوان العام</h3>
-           <Link to="/discover" className="text-[10px] font-black text-[#daa520] underline">اكتشف المزيد</Link>
-        </div>
-        
-        <div className="space-y-4">
-          {wallPosts.map(post => (
-            <div key={post.id} className="bg-white p-6 rounded-[2rem] shadow-sm border border-emerald-50 space-y-4 hover:border-emerald-100 transition-all">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl overflow-hidden border-2 border-slate-50">
-                  <img src={post.authorImage} className="w-full h-full object-cover grayscale" alt="" />
-                </div>
-                <div>
-                  <h4 className="font-black text-xs text-[#1a3c34]">{post.authorName}</h4>
-                  <p className="text-[9px] font-bold text-slate-400">{post.timestamp}</p>
-                </div>
+      {/* Wall Posts */}
+      <div className="space-y-4">
+        <h3 className="text-xl font-black text-[#1a3c34] px-2">الديوان العام</h3>
+        {wallPosts.map(post => (
+          <div key={post.id} className="bg-white p-6 rounded-[2rem] shadow-sm border border-emerald-50 space-y-4">
+            <div className="flex items-center gap-3">
+              <img src={post.authorImage} className="w-10 h-10 rounded-xl object-cover grayscale" alt="" />
+              <div>
+                <h4 className="font-black text-xs text-[#1a3c34]">{post.authorName}</h4>
+                <p className="text-[9px] font-bold text-slate-400">{post.timestamp}</p>
               </div>
-              <p className="text-sm font-medium leading-relaxed text-slate-700 bg-slate-50/50 p-4 rounded-xl border border-slate-100/30">
-                {post.content}
-              </p>
             </div>
-          ))}
-        </div>
+            <p className="text-sm font-medium leading-relaxed text-slate-700 bg-slate-50/50 p-4 rounded-xl">
+              {post.content}
+            </p>
+          </div>
+        ))}
       </div>
 
-      {/* Suggested Members - Compact Scroll */}
-      <div className="space-y-5">
-        <h3 className="text-xl font-black text-[#1a3c34] px-2">أعضاء بانتظارك</h3>
+      {/* Suggested - Horizontal Scroll Container */}
+      <div className="space-y-4 overflow-hidden">
+        <h3 className="text-xl font-black text-[#1a3c34] px-2">أعضاء جدد</h3>
         <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4 px-2">
           {recommendedMembers.map(member => (
-            <Link key={member.id} to="/discover" className="min-w-[140px] bg-white rounded-[2rem] p-5 shadow-sm border border-emerald-50 flex flex-col items-center text-center gap-3 hover:shadow-md transition-all">
-              <div className="w-16 h-16 rounded-full p-1 border-2 border-emerald-100 overflow-hidden">
-                <img src={member.profileImage} className="w-full h-full rounded-full object-cover grayscale opacity-70" alt="" />
-              </div>
+            <div key={member.id} className="min-w-[140px] bg-white rounded-[2rem] p-5 shadow-sm border border-emerald-50 flex flex-col items-center text-center gap-3">
+              <img src={member.profileImage} className="w-16 h-16 rounded-full grayscale border-2 border-emerald-50" alt="" />
               <div className="space-y-0.5">
                 <h4 className="text-[11px] font-black text-[#1a3c34] truncate w-24">{member.name}</h4>
                 <p className="text-[9px] font-bold text-slate-400">{member.city}</p>
               </div>
-              <div className="w-full py-2 bg-slate-50 text-[#1a3c34] rounded-lg font-black text-[9px]">عرض البروفايل</div>
-            </Link>
+              <Link to="/discover" className="w-full py-2 bg-emerald-50 text-[#1a3c34] rounded-lg font-black text-[9px]">عرض</Link>
+            </div>
           ))}
         </div>
       </div>

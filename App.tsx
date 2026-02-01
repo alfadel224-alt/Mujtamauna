@@ -19,7 +19,8 @@ import MobileNav from './components/MobileNav';
 const AppContent: React.FC = () => {
   const [lang, setLang] = useState<Language>('ar');
   const [currentUser, setCurrentUser] = useState<Member | null>(null);
-  const [showAuth, setShowAuth] = useState(false);
+  // تم تغيير الحالة الافتراضية إلى true ليفتح التطبيق على صفحة الدخول مباشرة
+  const [showAuth, setShowAuth] = useState(true);
   const [hasCompletedProfile, setHasCompletedProfile] = useState(false);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [members, setMembers] = useState<Member[]>(INITIAL_MEMBERS);
@@ -36,7 +37,10 @@ const AppContent: React.FC = () => {
 
     if (savedUser) {
       try {
-        setCurrentUser(JSON.parse(savedUser));
+        const user = JSON.parse(savedUser);
+        setCurrentUser(user);
+        // إذا كان المستخدم موجوداً، لا نحتاج لإظهار صفحة الدخول
+        setShowAuth(false);
       } catch (e) {
         localStorage.removeItem('mujtamauna_user');
       }
@@ -52,7 +56,7 @@ const AppContent: React.FC = () => {
     
     if (profileCompleted === 'true') setHasCompletedProfile(true);
 
-    const timer = setTimeout(() => setIsAppLoading(false), 2000);
+    const timer = setTimeout(() => setIsAppLoading(false), 1500);
     return () => clearTimeout(timer);
   }, []);
 
@@ -88,7 +92,7 @@ const AppContent: React.FC = () => {
     setCurrentUser(null);
     setHasCompletedProfile(false);
     setIsEditingProfile(false);
-    setShowAuth(false);
+    setShowAuth(true); // نعود لإظهار صفحة الدخول بعد تسجيل الخروج
     showMessage(lang === 'ar' ? 'في أمان الله، نتمنى نشوفك قريب' : 'Goodbye, see you soon');
   };
 
@@ -129,10 +133,12 @@ const AppContent: React.FC = () => {
     );
   }
 
+  // إذا لم يكن هناك مستخدم وكان showAuth هو false (يعني المستخدم ضغط رجوع مثلاً)، نعرض LandingPage
   if (!currentUser && !showAuth) {
     return <LandingPage onStart={() => setShowAuth(true)} lang={lang} />;
   }
 
+  // إذا لم يكن هناك مستخدم، نعرض صفحة الدخول مباشرة
   if (!currentUser) {
     return <AuthPage onAuth={handleAuth} lang={lang} />;
   }

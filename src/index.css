@@ -1,0 +1,206 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Amiri:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 30 50% 98%;
+    --foreground: 25 50% 15%;
+    --card: 30 40% 99%;
+    --card-foreground: 25 50% 15%;
+    --popover: 30 40% 99%;
+    --popover-foreground: 25 50% 15%;
+    --primary: 30 55% 35%;
+    --primary-foreground: 30 50% 98%;
+    --secondary: 45 70% 50%;
+    --secondary-foreground: 25 50% 15%;
+    --muted: 30 20% 92%;
+    --muted-foreground: 25 30% 40%;
+    --accent: 80 60% 35%;
+    --accent-foreground: 30 50% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 30 30% 85%;
+    --input: 30 30% 90%;
+    --ring: 45 70% 50%;
+    --radius: 0.625rem;
+    
+    --sudan-brown: #8B5A2B;
+    --sudan-gold: #D4AF37;
+    --sudan-cream: #FDF8F3;
+    --sudan-dark: #3D2914;
+    --sudan-olive: #6B8E23;
+    --sudan-rose: #C4A484;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Cairo', sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Amiri', serif;
+    font-weight: 700;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, var(--sudan-brown) 0%, var(--sudan-gold) 100%);
+  }
+  
+  .bg-sudan-gradient {
+    background: linear-gradient(135deg, var(--sudan-brown) 0%, var(--sudan-gold) 100%);
+  }
+  
+  .bg-sudan-cream {
+    background-color: var(--sudan-cream);
+  }
+  
+  .text-sudan-brown {
+    color: var(--sudan-brown);
+  }
+  
+  .text-sudan-gold {
+    color: var(--sudan-gold);
+  }
+  
+  .text-sudan-dark {
+    color: var(--sudan-dark);
+  }
+  
+  .border-sudan-gold {
+    border-color: var(--sudan-gold);
+  }
+  
+  .hover-lift {
+    @apply transition-all duration-300;
+  }
+  
+  .hover-lift:hover {
+    @apply -translate-y-1 shadow-lg;
+  }
+  
+  .card-tilt {
+    transform: rotate(-1deg);
+    @apply transition-all duration-300;
+  }
+  
+  .card-tilt:hover {
+    transform: rotate(0deg) translateY(-4px);
+    @apply shadow-xl;
+  }
+  
+  .glass-effect {
+    @apply backdrop-blur-md bg-white/80;
+  }
+  
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  .animate-heartbeat {
+    animation: heartbeat 1.5s ease-in-out infinite;
+  }
+  
+  .pattern-islamic {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%238B5A2B' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--sudan-cream);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--sudan-brown);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--sudan-gold);
+}
+
+/* RTL Support */
+[dir="rtl"] {
+  direction: rtl;
+}
+
+/* Input focus styles */
+input:focus, textarea:focus, select:focus {
+  @apply outline-none ring-2 ring-[#D4AF37] ring-offset-2 ring-offset-[#FDF8F3];
+}
+
+/* Button styles */
+.btn-primary {
+  @apply px-6 py-3 rounded-lg font-semibold text-white transition-all duration-300;
+  background: linear-gradient(135deg, var(--sudan-brown) 0%, var(--sudan-gold) 100%);
+}
+
+.btn-primary:hover {
+  @apply shadow-lg transform -translate-y-0.5;
+  filter: brightness(1.1);
+}
+
+.btn-secondary {
+  @apply px-6 py-3 rounded-lg font-semibold transition-all duration-300 border-2;
+  border-color: var(--sudan-gold);
+  color: var(--sudan-brown);
+}
+
+.btn-secondary:hover {
+  @apply text-white;
+  background: var(--sudan-gold);
+}
+
+/* Card styles */
+.card-sudan {
+  @apply rounded-xl p-6 transition-all duration-300;
+  background: white;
+  box-shadow: 0 4px 20px rgba(139, 90, 43, 0.1);
+}
+
+.card-sudan:hover {
+  box-shadow: 0 8px 30px rgba(139, 90, 43, 0.2);
+}
